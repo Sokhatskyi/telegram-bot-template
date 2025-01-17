@@ -13,6 +13,16 @@ services:
     ports:
       - '5432:5432'
 
+  redis:
+    image: redis:7-alpine
+    command: redis-server --port $REDIS_PORT --save 20 1 --loglevel warning --requirepass $REDIS_PASSWORD
+    env_file: .env
+    volumes:
+      - redis-data:/data
+    restart: on-failure
+    ports:
+      - '6379:6379'
+
   bot:
     build: .
     command: python3 -m bot
@@ -21,6 +31,8 @@ services:
     restart: always
     depends_on:
       - postgres
+      - redis
 
 volumes:
   postgres-data:
+  redis-data:
