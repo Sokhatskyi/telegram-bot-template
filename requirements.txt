@@ -3,3 +3,4 @@ environs~=14.1.0
 SQLAlchemy[asyncio]~=2.0.37
 asyncpg~=0.30.0
 alembic~=1.14.0
+redis~=5.2.1

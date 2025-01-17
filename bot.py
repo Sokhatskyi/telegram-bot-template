@@ -4,7 +4,7 @@ import logging
 from aiogram import Dispatcher, Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.redis import RedisStorage, DefaultKeyBuilder
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
 from infrastructure.database.setup import create_engine, create_session_pool
@@ -30,7 +30,10 @@ async def main():
     logger.info('Starting bot...')
 
     config = load_config('.env')  # Load the configuration from .env file
-    storage = MemoryStorage()
+    storage = RedisStorage(
+        redis=config.redis.build_redis(),
+        key_builder=DefaultKeyBuilder(with_bot_id=True, with_destiny=True)
+    )
     bot = Bot(
         token=config.tg_bot.token,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML)
